@@ -11,5 +11,9 @@ data class Microservice(
 
     @OneToMany(targetEntity = Log::class)
     @JoinColumn(name = "microServiceId", referencedColumnName = "microServiceId")
-    var logs: List<Log>?
+    var logs: List<Log>?,
+
+    @OneToMany(targetEntity = EngineersMicroServicesAllocations::class)
+    @JoinColumn(name = "microServiceId", referencedColumnName = "microServiceId")
+    var microServicesSupportEngineers: List<EngineersMicroServicesAllocations>?
 )

@@ -14,6 +14,7 @@ data class Log(
     @JoinColumn(name = "microServiceId")
     var microServiceId:Long,
     var level:String,
+    var log:String,
     var resolution:String? = null,
     var time: LocalDateTime
 )

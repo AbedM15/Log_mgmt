@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface MicroServicesRepository: JpaRepository<Microservice,Long> {
+
+    fun findByMicroServiceNameIgnoreCase(microServiceName:String):Microservice?
 }

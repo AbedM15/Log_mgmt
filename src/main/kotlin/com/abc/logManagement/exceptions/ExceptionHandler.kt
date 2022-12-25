@@ -16,6 +16,12 @@ class ExceptionHandler {
         return ResponseEntity.status(400).body(message)
     }
 
+    @ExceptionHandler(MicroServiceAlreadyExists::class)
+    fun microServiceAlreadyExists(exception:MicroServiceAlreadyExists):ResponseEntity<Any>{
+        val message = MicroServiceBadRequest(400,exception.message.toString())
+        return ResponseEntity.status(400).body(message)
+    }
+
 
 
 }
