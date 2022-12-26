@@ -59,6 +59,33 @@ class MicroServicesServiceImpl: MicroServicesService {
 
     }
 
+    override fun getMicroServiceById(id: Long): Microservice {
+
+        if (!microServicesRepository.findById(id).isPresent){
+            throw MicroServiceDoesNotExist("Micro service does not exist")
+        }else{
+            return microServicesRepository.findById(id).get()
+        }
+
+
+    }
+    override fun getAllMicroServices(): List<Microservice> {
+        return microServicesRepository.findAll()
+    }
+
+    override fun getMicroServiceByName(name: String): Microservice? {
+        if (name.isBlank()){
+            throw MicroServiceNameIsBlankOrNull("Micro service name cannot be empty")
+        }else {
+            val repositoryLayerCall = microServicesRepository.findByMicroServiceNameIgnoreCase(name)
+            if (repositoryLayerCall!!.microServiceName == null) {
+                throw MicroServiceDoesNotExist("Micro service does not exist")
+            } else {
+                return repositoryLayerCall
+            }
+        }
+    }
+
 
 
 }
