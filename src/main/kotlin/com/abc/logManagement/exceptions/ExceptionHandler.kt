@@ -21,6 +21,11 @@ class ExceptionHandler {
         val message = MicroServiceBadRequest(400,exception.message.toString())
         return ResponseEntity.status(400).body(message)
     }
+    @ExceptionHandler(MicroServiceDoesNotExist::class)
+    fun microServiceDoesNotExist(exception: MicroServiceDoesNotExist):ResponseEntity<Any>{
+        val message = MicroServiceBadRequest(404,exception.message.toString())
+        return ResponseEntity.status(404).body(message)
+    }
 
 
 

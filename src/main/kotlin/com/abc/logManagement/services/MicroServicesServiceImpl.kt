@@ -2,6 +2,7 @@ package com.abc.logManagement.services
 
 import com.abc.logManagement.entities.Microservice
 import com.abc.logManagement.exceptions.MicroServiceAlreadyExists
+import com.abc.logManagement.exceptions.MicroServiceDoesNotExist
 import com.abc.logManagement.exceptions.MicroServiceNameIsBlankOrNull
 import com.abc.logManagement.repositories.MicroServicesRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,6 +28,33 @@ class MicroServicesServiceImpl: MicroServicesService {
         return microServicesRepository.save(microservice)
     }
 
+    }
+
+    override fun deleteMicroServiceById(id: Long) {
+
+            val repositoryLayerCall = microServicesRepository.findById(id)
+
+            if (!repositoryLayerCall.isPresent) {
+                throw MicroServiceDoesNotExist("Micro service of id: $id does not exist ")
+
+            } else {
+                return microServicesRepository.deleteById(id)
+            }
+
+
+    }
+
+    override fun deleteMicroServiceByName(name: String) {
+
+        if(name.isBlank()){
+            throw MicroServiceNameIsBlankOrNull("Micro service name cannot be empty")
+        }
+
+        if(microServicesRepository.findByMicroServiceNameIgnoreCase(name) == null){
+            throw MicroServiceDoesNotExist("Micro service does not exist")
+        }else{
+            return microServicesRepository.deleteByMicroServiceName(name)
+        }
 
 
     }
