@@ -13,5 +13,7 @@ class InvalidEmailAddress(override val message: String?):Exception()
 
 class SupportEngineerAlreadyExists(override val message: String?):Exception()
 
+class SupportEngineerDoesNotExist(override val message: String?):Exception()
+
 
 

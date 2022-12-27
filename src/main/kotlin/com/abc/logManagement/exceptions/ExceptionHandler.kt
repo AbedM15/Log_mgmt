@@ -43,6 +43,11 @@ class ExceptionHandler {
         return ResponseEntity.status(400).body(SupportEngineerBadRequest(400,exception.message.toString()))
     }
 
+    @ExceptionHandler(SupportEngineerDoesNotExist::class)
+    fun supportEngineerDoesNotExist(exception:SupportEngineerDoesNotExist):ResponseEntity<Any>{
+        return ResponseEntity.status(404).body(SupportEngineerBadRequest(404,exception.message.toString()))
+    }
+
 
 
 

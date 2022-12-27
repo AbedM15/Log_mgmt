@@ -3,6 +3,7 @@ package com.abc.logManagement.services
 import com.abc.logManagement.entities.SupportEngineer
 import com.abc.logManagement.exceptions.InvalidEmailAddress
 import com.abc.logManagement.exceptions.SupportEngineerAlreadyExists
+import com.abc.logManagement.exceptions.SupportEngineerDoesNotExist
 import com.abc.logManagement.exceptions.SupportEngineerRequiredField
 import com.abc.logManagement.repositories.SupportEngineersRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -39,11 +40,24 @@ class SupportEngineersServiceImpl: SupportEngineersService {
             return repositoryLayerCall.save(supportEngineer)
         }
 
-
-
-
-
-
-
     }
+
+    override fun deleteSupportEngineerById(id: Long) {
+        if(!repositoryLayerCall.findById(id).isPresent){
+            throw SupportEngineerDoesNotExist("Support engineer of id $id does not exist ")
+        }else{
+            return repositoryLayerCall.deleteById(id)
+        }
+    }
+
+    override fun deleteSupportEngineerByEmail(email: String) {
+
+        if (repositoryLayerCall.supportEngineerExists(email) >= 1){
+            return repositoryLayerCall.deleteSupportEngineerByEmail(email)
+        }else{
+            throw SupportEngineerDoesNotExist("Support engineer of email $email does not exist")
+        }
+    }
+
+
 }
