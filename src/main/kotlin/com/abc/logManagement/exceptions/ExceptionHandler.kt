@@ -1,6 +1,7 @@
 package com.abc.logManagement.exceptions
 
 import com.abc.logManagement.responseEntities.MicroServiceBadRequest
+import com.abc.logManagement.responseEntities.SupportEngineerBadRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -26,6 +27,22 @@ class ExceptionHandler {
         val message = MicroServiceBadRequest(404,exception.message.toString())
         return ResponseEntity.status(404).body(message)
     }
+
+    @ExceptionHandler(SupportEngineerRequiredField::class)
+    fun emailAddressIsARequiredField(exception:SupportEngineerRequiredField):ResponseEntity<Any>{
+        return ResponseEntity.status(400).body(SupportEngineerBadRequest(400,exception.message.toString()))
+    }
+
+    @ExceptionHandler(InvalidEmailAddress::class)
+    fun invalidEmailAddress(exception:InvalidEmailAddress):ResponseEntity<Any>{
+        return ResponseEntity.status(400).body(SupportEngineerBadRequest(400,exception.message.toString()))
+    }
+
+    @ExceptionHandler(SupportEngineerAlreadyExists::class)
+    fun supportEngineerAlreadyExists(exception:SupportEngineerAlreadyExists):ResponseEntity<Any>{
+        return ResponseEntity.status(400).body(SupportEngineerBadRequest(400,exception.message.toString()))
+    }
+
 
 
 

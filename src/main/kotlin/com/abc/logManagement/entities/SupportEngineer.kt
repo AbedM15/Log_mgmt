@@ -21,7 +21,7 @@ data class SupportEngineer (
     var firstName:String,
     @Column(name = "last_name")
     var lastName:String,
-    @Column(name = "email_address")
+    @Column(name = "email_address",unique = true)
     var emailAddress:String,
 
     @OneToMany(targetEntity = EngineersMicroServicesAllocations::class)

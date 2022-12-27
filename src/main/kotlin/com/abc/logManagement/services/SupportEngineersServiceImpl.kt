@@ -1,0 +1,49 @@
+package com.abc.logManagement.services
+
+import com.abc.logManagement.entities.SupportEngineer
+import com.abc.logManagement.exceptions.InvalidEmailAddress
+import com.abc.logManagement.exceptions.SupportEngineerAlreadyExists
+import com.abc.logManagement.exceptions.SupportEngineerRequiredField
+import com.abc.logManagement.repositories.SupportEngineersRepository
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
+
+@Service
+class SupportEngineersServiceImpl: SupportEngineersService {
+
+    @Autowired
+    lateinit var repositoryLayerCall:SupportEngineersRepository
+
+    val EMAIL_REGEX = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})";
+    fun isEmailValid(email: String): Boolean {
+        return EMAIL_REGEX.toRegex().matches(email);
+    }
+
+
+
+    override fun addSupportEngineer(supportEngineer: SupportEngineer): SupportEngineer {
+
+        when{
+            supportEngineer.emailAddress.isBlank() -> throw SupportEngineerRequiredField("Support engineer email cannot be empty")
+            supportEngineer.firstName.isBlank() -> throw SupportEngineerRequiredField("Support engineer first name cannot be empty")
+            supportEngineer.lastName.isBlank() -> throw SupportEngineerRequiredField("Support engineer last name cannot be empty")
+        }
+
+        if(!isEmailValid(supportEngineer.emailAddress)){
+            throw InvalidEmailAddress("Support engineer email is not a valid address")
+        }
+
+        if (repositoryLayerCall.supportEngineerExists(supportEngineer.emailAddress) >= 1){
+            throw SupportEngineerAlreadyExists("Support engineer already exists")
+        }else{
+            return repositoryLayerCall.save(supportEngineer)
+        }
+
+
+
+
+
+
+
+    }
+}
