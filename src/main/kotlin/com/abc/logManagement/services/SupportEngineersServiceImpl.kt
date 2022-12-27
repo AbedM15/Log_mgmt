@@ -59,5 +59,32 @@ class SupportEngineersServiceImpl: SupportEngineersService {
         }
     }
 
+    override fun getAll(): List<SupportEngineer> {
+        return repositoryLayerCall.findAll()
+    }
+
+    override fun getSupportEngineerById(id: Long): SupportEngineer {
+        if (repositoryLayerCall.findById(id).isPresent){
+            return repositoryLayerCall.findById(id).get()
+        }else{
+            throw SupportEngineerDoesNotExist("Support Engineer of id $id does not exist")
+        }
+
+    }
+
+    override fun getSupportEngineerByEmail(email: String): SupportEngineer {
+       if(email.isBlank()){
+           throw SupportEngineerRequiredField("Email address is a required field")
+       }else{
+
+          if (repositoryLayerCall.supportEngineerExists(email)>=1){
+              return repositoryLayerCall.getSupportEngineerByEmail(email)
+          }else{
+              throw SupportEngineerDoesNotExist("Support Engineer of email $email does not exist")
+          }
+
+       }
+    }
+
 
 }

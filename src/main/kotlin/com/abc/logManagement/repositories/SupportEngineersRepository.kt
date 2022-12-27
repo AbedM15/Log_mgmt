@@ -17,6 +17,9 @@ interface SupportEngineersRepository: JpaRepository<SupportEngineer,Long> {
     @Query(value = "DELETE FROM support_engineers WHERE email_address = :emailAddress", nativeQuery = true)
     fun deleteSupportEngineerByEmail(emailAddress: String)
 
+    @Query(value = "SELECT * FROM support_engineers WHERE email_address = :email",nativeQuery = true)
+    fun getSupportEngineerByEmail(email:String):SupportEngineer
+
 
 
 }
