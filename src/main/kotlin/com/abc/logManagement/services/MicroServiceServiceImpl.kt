@@ -25,7 +25,7 @@ class MicroServiceServiceImpl:MicroServiceService {
                 when{
                     repo.findMicroServiceByName(microService.name)>=1 -> throw MicroServiceBadRequest("Micro service already exists")
                     else -> {
-                        val toBeSaved = MicroService(microServiceId = null, microServiceName = microService.name)
+                        val toBeSaved = MicroService(microServiceId = null, microServiceName = microService.name, supportEngineers = null)
                         val saved = repo.save(toBeSaved)
                         return  MicroServiceCreated(microServiceId = saved.microServiceId, microServiceName = saved.microServiceName)
                     }
@@ -43,7 +43,7 @@ class MicroServiceServiceImpl:MicroServiceService {
             !repo.findById(id).isPresent -> throw MicroServiceNotFound("Micro service not found")
             else -> {
                 val fetched = repo.findById(id).get()
-                return FetchedMicroService(microServiceId = fetched.microServiceId, microServiceName = fetched.microServiceName, microServiceLogs = fetched.microServiceLogs)
+                return FetchedMicroService(microServiceId = fetched.microServiceId, microServiceName = fetched.microServiceName, microServiceLogs = fetched.microServiceLogs, supportEngineers = fetched.supportEngineers)
             }
         }
     }
@@ -52,7 +52,7 @@ class MicroServiceServiceImpl:MicroServiceService {
     fun mapToAllMicroServices(microServices:MutableList<MicroService>):MutableList<AllMicroServices>{
         val all = mutableListOf<AllMicroServices>()
         for (m in microServices){
-            all.add(AllMicroServices(microServiceId = m.microServiceId, microServiceName = m.microServiceName, microServiceLogs = m.microServiceLogs ))
+            all.add(AllMicroServices(microServiceId = m.microServiceId, microServiceName = m.microServiceName, microServiceLogs = m.microServiceLogs, supportEngineers = m.supportEngineers ))
         }
         return all
     }

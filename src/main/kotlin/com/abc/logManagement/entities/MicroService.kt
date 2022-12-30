@@ -12,10 +12,13 @@ data class MicroService (
     var microServiceId:Long? = 1,
 
     @Column(name = "micro_service_name",unique = true,nullable = false)
-    var microServiceName:String,
+    var microServiceName:String?,
 
 
     @OneToMany(mappedBy = "microService")
-    var microServiceLogs:MutableList<Log>? = null
+    var microServiceLogs:MutableList<Log>? = null,
+
+    @ManyToMany(mappedBy = "microServices")
+    var supportEngineers:MutableSet<SupportEngineer>?
 
 )
