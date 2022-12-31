@@ -21,12 +21,12 @@ data class SupportEngineer (
     var emailAddress:String,
 
 
-    @ManyToMany(cascade = [CascadeType.ALL])
+    @ManyToMany(cascade = [CascadeType.PERSIST,CascadeType.MERGE], fetch = FetchType.LAZY)
     @JoinTable(name = "engineer_micro_service",
     joinColumns = [JoinColumn(name = "support_engineer_id", referencedColumnName = "support_engineer_id" )
     ],
     inverseJoinColumns = [JoinColumn(name = "micro_service_id", referencedColumnName = "micro_service_id")])
-    var microServices:MutableSet<MicroService>?
+    var microServices:MutableSet<MicroService>? = null
 
 
 

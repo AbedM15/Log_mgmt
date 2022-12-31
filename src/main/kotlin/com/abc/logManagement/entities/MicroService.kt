@@ -19,6 +19,6 @@ data class MicroService (
     var microServiceLogs:MutableList<Log>? = null,
 
     @ManyToMany(mappedBy = "microServices")
-    var supportEngineers:MutableSet<SupportEngineer>?
+    var supportEngineers:MutableSet<SupportEngineer>? = null
 
 )

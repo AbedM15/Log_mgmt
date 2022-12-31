@@ -35,23 +35,16 @@ class SupportEngineerServiceImpl:SupportEngineerService {
             repo.findEngineerByEmail(supportEngineer.emailAddress) >=1 -> throw SupportEngineerBadRequest("Support engineer with email ${supportEngineer.emailAddress} already exists")
 
             else-> {
-                val microServices = mutableSetOf<MicroService>()
-                val finalMicroServiceSet = mutableSetOf<MicroService>()
-                for(m in supportEngineer.microServices!!){
-                   microServices.add(m)
-                }
-
-                for(m in microServices){
-                    if(!microServicesRepo.findById(m.microServiceId!!).isPresent){
-                        throw SupportEngineerBadRequest("Micro service with id ${m.microServiceId} does not exist")
+                if(!microServicesRepo.findById(supportEngineer.microServices!!.first().microServiceId!!).isPresent){
+                        throw SupportEngineerBadRequest("Micro service with id ${supportEngineer.microServices!!.first().microServiceId!!} does not exist")
                     }else{
-                        finalMicroServiceSet.add(microServicesRepo.findById(m.microServiceId!!).get())
-                    }
-                }
-
-                val toBeSaved = SupportEngineer(id = null, firstName = supportEngineer.firstName, lastName = supportEngineer.lastName, emailAddress = supportEngineer.emailAddress,microServices = finalMicroServiceSet)
+                        val microService:MutableSet<MicroService> = mutableSetOf()
+                        microService.add(microServicesRepo.findById(supportEngineer.microServices!!.first().microServiceId!!).get())
+                        val toBeSaved = SupportEngineer(id = null, firstName = supportEngineer.firstName, lastName = supportEngineer.lastName, emailAddress = supportEngineer.emailAddress,
+                        microServices = microService )
                 val saved = repo.save(toBeSaved)
                 return SupportEngineerCreated(id = saved.id, firstName = saved.firstName, lastName = saved.lastName, emailAddress = saved.emailAddress, microServices = saved.microServices )
+                    }
             }
         }
     }
@@ -66,7 +59,7 @@ class SupportEngineerServiceImpl:SupportEngineerService {
             throw SupportEngineerDoesNotExist("Support engineer of id $id does not exist")
         }else{
             val supportEng = repo.findById(id).get()
-            return SupportEngineerRetrieved(id = supportEng.id, firstName = supportEng.firstName, lastName = supportEng.lastName, emailAddress = supportEng.emailAddress)
+            return SupportEngineerRetrieved(id = supportEng.id, firstName = supportEng.firstName, lastName = supportEng.lastName, emailAddress = supportEng.emailAddress, microServices = supportEng.microServices)
         }
     }
 
