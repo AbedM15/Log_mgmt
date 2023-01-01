@@ -1,8 +1,8 @@
 package com.abc.logManagement.entities
 
+import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
 import java.time.LocalDateTime
-import java.util.*
 
 @Entity
 @Table(name = "micro_services_logs")
@@ -10,13 +10,14 @@ data class Log (
 
     @Id
     @Column(name = "log_id")
-    var logId:Long,
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var logId:Long?,
 
     @Column(name = "log_level",nullable = false)
     var level:String,
 
     @Column(name = "resolution")
-    var resolution:String,
+    var resolution:String?,
 
     @Column(name = "log",nullable = false)
     var log:String,
@@ -24,8 +25,9 @@ data class Log (
     @Column(name = "time",nullable = false)
     var time: LocalDateTime,
 
-    @ManyToOne
+    @ManyToOne(cascade = [CascadeType.PERSIST,CascadeType.MERGE])
     @JoinColumn(name = "micro_service_id")
+    @JsonBackReference
     var microService:MicroService
 
     )
