@@ -59,7 +59,7 @@ class SupportEngineerServiceImpl:SupportEngineerService {
             throw SupportEngineerDoesNotExist("Support engineer of id $id does not exist")
         }else{
             val supportEng = repo.findById(id).get()
-            return SupportEngineerRetrieved(id = supportEng.id, firstName = supportEng.firstName, lastName = supportEng.lastName, emailAddress = supportEng.emailAddress, microServices = supportEng.microServices)
+            return SupportEngineerRetrieved(id = supportEng.id, firstName = supportEng.firstName, lastName = supportEng.lastName, emailAddress = supportEng.emailAddress)
         }
     }
 
