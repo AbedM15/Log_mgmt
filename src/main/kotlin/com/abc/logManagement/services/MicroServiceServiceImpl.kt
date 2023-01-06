@@ -1,9 +1,6 @@
 package com.abc.logManagement.services
 
-import com.abc.logManagement.dto.AllMicroServices
-import com.abc.logManagement.dto.CreateMicroService
-import com.abc.logManagement.dto.FetchedMicroService
-import com.abc.logManagement.dto.MicroServiceCreated
+import com.abc.logManagement.dto.*
 import com.abc.logManagement.entities.MicroService
 import com.abc.logManagement.entities.SupportEngineer
 import com.abc.logManagement.exceptions.MicroServiceBadRequest
@@ -44,7 +41,7 @@ class MicroServiceServiceImpl:MicroServiceService {
     }
     override fun fetchAllMicroServices(): MutableList<AllMicroServices>? {
         val unmappedMicroServices: MutableList<MicroService> = repo.findAll()
-      //  logger.info("support eng if any: ${unmappedMicroServices[0].supportEngineers!!.first().emailAddress} ")
+
         return mapToAllMicroServices(unmappedMicroServices)
     }
 
@@ -52,7 +49,7 @@ class MicroServiceServiceImpl:MicroServiceService {
         when{
             !repo.findById(id).isPresent -> throw MicroServiceNotFound("Micro service not found")
             else -> {
-                var supportEngineers:MutableSet<SupportEngineer>? = mutableSetOf()
+                val supportEngineers:MutableSet<MicroServiceByIdSupportEngineer>?
                 val fetched = repo.findById(id).get()
                 val supportEngineerIds:List<Long>? = repo.findSupportEngineerIdsByMicroServiceId(id)
                 supportEngineers = microServiceSupportEngineers(supportEngineerIds)
@@ -65,24 +62,37 @@ class MicroServiceServiceImpl:MicroServiceService {
     fun mapToAllMicroServices(microServices:MutableList<MicroService>):MutableList<AllMicroServices>{
         val all = mutableListOf<AllMicroServices>()
         for (m in microServices){
-            all.add(AllMicroServices(microServiceId = m.microServiceId, microServiceName = m.microServiceName, microServiceLogs = m.microServiceLogs, supportEngineers = m.supportEngineers ))
+            var suppEng:MutableSet<MicroServiceByIdSupportEngineer>?
+            val supportEngineerIds:List<Long>? = repo.findSupportEngineerIdsByMicroServiceId(m.microServiceId!!)
+            suppEng = microServiceSupportEngineers(supportEngineerIds)
+            all.add(AllMicroServices(microServiceId = m.microServiceId, microServiceName = m.microServiceName, microServiceLogs = m.microServiceLogs, supportEngineers = suppEng))
         }
         return all
     }
 
 
-    fun microServiceSupportEngineers(supportEngineerIds:List<Long>?):MutableSet<SupportEngineer>?{
-        var supportEngineers:MutableSet<SupportEngineer>? = mutableSetOf()
+    fun microServiceSupportEngineers(supportEngineerIds:List<Long>?):MutableSet<MicroServiceByIdSupportEngineer>?{
+        val supportEngineers:MutableSet<MicroServiceByIdSupportEngineer>? = mutableSetOf()
+        var temp:SupportEngineer
         return if(supportEngineerIds.isNullOrEmpty()){
             null
         }else{
             for (m in supportEngineerIds){
-                supportEngineers!!.add(engRepo.findById(m).get())
+                temp = engRepo.findById(m).get()
+                supportEngineers!!.add(
+                    MicroServiceByIdSupportEngineer(id = temp.id, firstName = temp.firstName,
+                    lastName = temp.lastName, emailAddress = temp.emailAddress
+                )
+                )
             }
             supportEngineers
         }
 
     }
+
+
+
+
 
 
 }

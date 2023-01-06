@@ -43,10 +43,10 @@ class LogServiceImpl:LogService {
                 log.log.isBlank() -> throw LogBadRequest("Log field cannot be empty")
                 log.time.isBlank() -> throw LogBadRequest("Log time entered is invalid")
                 !isValidLocalDateTime(log.time) -> throw LogBadRequest("Date time value provided is invalid")
-                log.microService.microServiceId.toString().isBlank()  -> throw LogBadRequest("Micro service id is a required field")
-                !microServiceRepo.findById(log.microService.microServiceId!!).isPresent -> throw LogBadRequest("Micro service with id ${log.microService.microServiceId} does not exist")
+                log.microServiceId.toString().isBlank()  -> throw LogBadRequest("Micro service id is a required field")
+                !microServiceRepo.findById(log.microServiceId).isPresent -> throw LogBadRequest("Micro service with id ${log.microServiceId} does not exist")
                 else ->  {
-                    val microService = microServiceRepo.findById(log.microService.microServiceId!!).get()
+                    val microService = microServiceRepo.findById(log.microServiceId).get()
                     val toBeSaved = Log(logId = null, level = log.level.uppercase(),
                     resolution = if (log.level.lowercase() == "fatal") "unresolved" else null,
                     log = log.log, time = LocalDateTime.parse(log.time,formatter), microService = microService)

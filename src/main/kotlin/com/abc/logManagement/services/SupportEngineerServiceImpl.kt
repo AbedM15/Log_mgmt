@@ -1,9 +1,6 @@
 package com.abc.logManagement.services
 
-import com.abc.logManagement.dto.AllEngineers
-import com.abc.logManagement.dto.SupportEngineerCreate
-import com.abc.logManagement.dto.SupportEngineerCreated
-import com.abc.logManagement.dto.SupportEngineerRetrieved
+import com.abc.logManagement.dto.*
 import com.abc.logManagement.entities.MicroService
 import com.abc.logManagement.entities.SupportEngineer
 import com.abc.logManagement.exceptions.SupportEngineerBadRequest
@@ -31,19 +28,21 @@ class SupportEngineerServiceImpl:SupportEngineerService {
             supportEngineer.lastName.isBlank() -> throw SupportEngineerBadRequest("Last Name field cannot be blank")
             supportEngineer.emailAddress.isBlank() -> throw SupportEngineerBadRequest("Email Address field cannot be blank")
             !isEmailValid(supportEngineer.emailAddress) -> throw SupportEngineerBadRequest("Email entered is not a valid address")
-            supportEngineer.microServices.isNullOrEmpty()  -> throw SupportEngineerBadRequest("Micro service id is required inorder to create a support engineer")
+            supportEngineer.microServiceId.toString().isBlank()  -> throw SupportEngineerBadRequest("Micro service id is required inorder to create a support engineer")
             repo.findEngineerByEmail(supportEngineer.emailAddress) >=1 -> throw SupportEngineerBadRequest("Support engineer with email ${supportEngineer.emailAddress} already exists")
 
             else-> {
-                if(!microServicesRepo.findById(supportEngineer.microServices!!.first().microServiceId!!).isPresent){
-                        throw SupportEngineerBadRequest("Micro service with id ${supportEngineer.microServices!!.first().microServiceId!!} does not exist")
+                if(!microServicesRepo.findById(supportEngineer.microServiceId).isPresent){
+                        throw SupportEngineerBadRequest("Micro service with id ${supportEngineer.microServiceId} does not exist")
                     }else{
                         val microService:MutableSet<MicroService> = mutableSetOf()
-                        microService.add(microServicesRepo.findById(supportEngineer.microServices!!.first().microServiceId!!).get())
+                        microService.add(microServicesRepo.findById(supportEngineer.microServiceId).get())
                         val toBeSaved = SupportEngineer(id = null, firstName = supportEngineer.firstName, lastName = supportEngineer.lastName, emailAddress = supportEngineer.emailAddress,
                         microServices = microService )
                 val saved = repo.save(toBeSaved)
-                return SupportEngineerCreated(id = saved.id, firstName = saved.firstName, lastName = saved.lastName, emailAddress = saved.emailAddress, microServices = saved.microServices )
+                    val addedMicroService = microServicesRepo.findById(supportEngineer.microServiceId).get()
+                return SupportEngineerCreated(id = saved.id, firstName = saved.firstName, lastName = saved.lastName, emailAddress = saved.emailAddress,
+                    microService = CreatedSupportEngineerMicroService(microServiceId = addedMicroService.microServiceId, microServiceName = addedMicroService.microServiceName))
                     }
             }
         }

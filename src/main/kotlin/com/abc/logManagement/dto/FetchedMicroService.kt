@@ -8,6 +8,6 @@ data class FetchedMicroService (
     var microServiceId:Long?,
     var microServiceName:String?,
     var microServiceLogs:MutableList<Log>?,
-    var supportEngineers:MutableSet<SupportEngineer>?
+    var supportEngineers:MutableSet<MicroServiceByIdSupportEngineer>?
 
     )
