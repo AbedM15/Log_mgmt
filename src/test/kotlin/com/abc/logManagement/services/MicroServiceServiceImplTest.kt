@@ -41,10 +41,6 @@ internal class MicroServiceServiceImplTest {
         null,null))).thenReturn(microService)
 
 
-
-
-
-
     }
 
     @Test
@@ -104,44 +100,6 @@ internal class MicroServiceServiceImplTest {
         assertEquals(microServices[2].microServiceId,fetchedMicroServices[2].microServiceId)
     }
 
-    /*@Test
-    fun whenMapToAllMicroServicesIsCalledWithValidMicroServicesListAListOfAllMicroServicesShouldBeReturned(){
-        val microServices = mutableListOf(
-            MicroService(1,"test1",null,null),
-            MicroService(2,"test2",null,null),
-            MicroService(3,"test3",null,null)
-        )
-
-        Mockito.`when`(repositoryLayer.findSupportEngineerIdsByMicroServiceId(1)).
-        thenReturn(listOf(1L))
-        Mockito.`when`(repositoryLayer.findSupportEngineerIdsByMicroServiceId(1)).
-        thenReturn(listOf(2L))
-        Mockito.`when`(repositoryLayer.findSupportEngineerIdsByMicroServiceId(1)).
-        thenReturn(emptyList())
-
-        Mockito.`when`(serviceLayer.microServiceSupportEngineers(listOf(1L))).
-        thenReturn(mutableSetOf(MicroServiceByIdSupportEngineer(1L,"John","Doe","jdoe@gmail.com")))
-        Mockito.`when`(serviceLayer.microServiceSupportEngineers(listOf(2L))).
-        thenReturn(mutableSetOf(MicroServiceByIdSupportEngineer(2L,"Jackie","Chan","jackiechan@gmail.com")))
-
-        val allMicroServices:MutableList<AllMicroServices> = serviceLayer.mapToAllMicroServices(microServices)
-
-        val supportEngineerOneName:String = allMicroServices[0].supportEngineers!!.first().firstName
-        val supportEngineerTwoName:String = allMicroServices[1].supportEngineers!!.first().firstName
-
-
-        assertEquals(1,allMicroServices[0].supportEngineers!!.size)
-        assertEquals(1,allMicroServices[1].supportEngineers!!.size)
-        assertEquals(0,allMicroServices[2].supportEngineers!!.size)
-        assertEquals("John",supportEngineerOneName)
-        assertEquals("Jackie",supportEngineerTwoName)
-
-    }*/
-
-
-
-
-
     @Test
     @Disabled
     fun whenTryingToFetchMicroServiceWithIdThatDoesNotExistAnExceptionShouldBeThrown(){
@@ -167,5 +125,24 @@ internal class MicroServiceServiceImplTest {
         assertEquals("Test Micro Service",repositoryLayer.findById(1L).get().microServiceName)
 
     }
+
+
+    @Test
+    @Disabled
+    fun whenTryingToFetchSupportEngineersByMicroServiceIdListOfSupportEngineerIdsShouldBeReturned(){
+        val microServiceId = 1L
+
+        Mockito.`when`(repositoryLayer.findSupportEngineerIdsByMicroServiceId(1L)).thenReturn(
+            listOf(1,2,3,4)
+        )
+
+        val supportEngineersIds = repositoryLayer.findSupportEngineerIdsByMicroServiceId(1L)
+
+        assertEquals(4,supportEngineersIds!!.size)
+    }
+
+
+
+
 
 }
