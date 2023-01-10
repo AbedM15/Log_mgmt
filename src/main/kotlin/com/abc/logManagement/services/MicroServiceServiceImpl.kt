@@ -24,14 +24,14 @@ class MicroServiceServiceImpl:MicroServiceService {
 
     var logger: Logger = LoggerFactory.getLogger(MicroServiceServiceImpl::class.java)
 
-    override fun createMicroService(microService: CreateMicroService): MicroServiceCreated {
+    override fun createMicroService(microService: String): MicroServiceCreated {
         when {
-            microService.name.isBlank() -> throw MicroServiceBadRequest("Micro service name cannot be empty")
+            microService.isBlank() -> throw MicroServiceBadRequest("Micro service name cannot be empty")
             else-> {
                 when{
-                    repo.findMicroServiceByName(microService.name)>=1 -> throw MicroServiceBadRequest("Micro service already exists")
+                    repo.findMicroServiceByName(microService)>=1 -> throw MicroServiceBadRequest("Micro service already exists")
                     else -> {
-                        val toBeSaved = MicroService(microServiceId = null, microServiceName = microService.name, supportEngineers = null)
+                        val toBeSaved = MicroService(microServiceId = null, microServiceName = microService, supportEngineers = null)
                         val saved = repo.save(toBeSaved)
                         return  MicroServiceCreated(microServiceId = saved.microServiceId, microServiceName = saved.microServiceName)
                     }

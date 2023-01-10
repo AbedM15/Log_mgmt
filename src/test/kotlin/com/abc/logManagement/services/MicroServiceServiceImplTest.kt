@@ -46,8 +46,8 @@ internal class MicroServiceServiceImplTest {
     @Test
     @Disabled
     fun whenValidMicroServiceSavedMicroServiceShouldBeReturned(){
-        val createMicroService = CreateMicroService("Customer Feedback")
-        val savedMicroService = repositoryLayer.save(MicroService(null,createMicroService.name,
+        val createMicroService = "Customer Feedback"
+        val savedMicroService = repositoryLayer.save(MicroService(null,createMicroService,
             null,null))
         assertEquals(1L,savedMicroService.microServiceId)
     }
@@ -55,10 +55,10 @@ internal class MicroServiceServiceImplTest {
     @Test
     @Disabled
     fun testCreateMicroService_throwsBadRequestIfNameIsBlank() {
-        val createMicroService = CreateMicroService( "")
+        val microService = ""
 
         try {
-            serviceLayer.createMicroService(createMicroService)
+            serviceLayer.createMicroService(microService)
             fail("Expected MicroServiceBadRequest exception")
         } catch (e: MicroServiceBadRequest) {
             assertEquals("Micro service name cannot be empty", e.message)
@@ -69,7 +69,7 @@ internal class MicroServiceServiceImplTest {
     @Test
     @Disabled
     fun testCreateMicroService_throwBadRequestIfMicroServiceWithSameNameExists(){
-        val createMicroService = CreateMicroService("Test MicroService")
+        val createMicroService = "Test MicroService"
         Mockito.`when`(repositoryLayer.findMicroServiceByName("Test MicroService")).thenReturn(1)
 
         try {

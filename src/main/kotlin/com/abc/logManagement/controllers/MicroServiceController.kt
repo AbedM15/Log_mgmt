@@ -14,7 +14,7 @@ class MicroServiceController {
     lateinit var service:MicroServiceServiceImpl
 
     @PostMapping("/create")
-    fun createMicroService(@RequestParam(name = "name") microService: CreateMicroService):ResponseEntity<Any>{
+    fun createMicroService(@RequestParam(name = "name") microService: String):ResponseEntity<Any>{
 
         val microService = service.createMicroService(microService)
 
