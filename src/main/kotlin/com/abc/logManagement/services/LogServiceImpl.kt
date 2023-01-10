@@ -1,10 +1,9 @@
 package com.abc.logManagement.services
 
 import com.abc.logManagement.dto.CreateLogEntry
-import com.abc.logManagement.dto.LogCreated
+import com.abc.logManagement.dto.SearchByLogsResponse
 import com.abc.logManagement.entities.Log
 import com.abc.logManagement.entities.MicroService
-import com.abc.logManagement.entities.SupportEngineer
 import com.abc.logManagement.exceptions.LogBadRequest
 import com.abc.logManagement.repositories.LogsRepository
 import com.abc.logManagement.repositories.MicroServicesRepository
@@ -68,6 +67,33 @@ class LogServiceImpl:LogService {
     }
 
 
+    override fun getLogsByValue(value: String): MutableList<SearchByLogsResponse>? {
+        val values = listOf("resolved","unresolved","info","debug","error","fatal")
+        when{
+            value.isBlank() -> throw LogBadRequest("Value field cannot be empty")
+            value.lowercase() in values -> {
+                if(value == "info" || value == "debug" || value == "error" || value == "fatal") {
+
+                    val logs = repo.findByLevel(value)
+
+                    return mapToSearchByLogs(logs)
+
+
+                }else{
+                    val logs = repo.findByResolution(value)
+
+                    return mapToSearchByLogs(logs)
+
+                }
+            }
+
+            else -> throw LogBadRequest("$value is an invalid value")
+        }
+    }
+
+
+
+
     fun mailSupportEngineersIfFatal(body:String,subject:String, mailList:List<String>){
         logger.info("INSIDE SENDER")
 
@@ -99,5 +125,20 @@ class LogServiceImpl:LogService {
         return mails
     }
 
+
+    fun mapToSearchByLogs(logs:MutableList<Log>?):MutableList<SearchByLogsResponse>?{
+        val result: MutableList<SearchByLogsResponse>? = mutableListOf()
+        if(logs.isNullOrEmpty()){
+            return null
+        }else{
+            for (m in logs){
+                result!!.add(SearchByLogsResponse(logId = m.logId,
+                level = m.level,resolution = m.resolution, logMessage = m.log,
+                time = m.time, microServiceId = m.microService.microServiceId,
+                microServiceName = m.microService.microServiceName))
+            }
+            return result
+        }
+    }
 
 }
