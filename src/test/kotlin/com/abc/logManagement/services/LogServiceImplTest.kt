@@ -87,6 +87,51 @@ internal class LogServiceImplTest{
         }
     }
 
+    @Test
+    @Disabled
+    fun whenSearchLogsByValueHasEmptyValueBadRequestShouldBeThrown(){
+        val value = ""
+
+        try {
+            serviceLayer.getLogsByValue(value)
+        }catch (e:LogBadRequest){
+            assertEquals("Value field cannot be empty",e.message)
+        }
+    }
+
+    @Test
+    @Disabled
+    fun whenSearchLogsByValueHasInvalidValueBadRequestShouldBeThrown(){
+        val value = "dog"
+
+        try {
+            serviceLayer.getLogsByValue(value)
+        }catch (e:LogBadRequest){
+           assertEquals("$value is an invalid value",e.message)
+        }
+    }
+
+
+    @Test
+    @Disabled
+    fun whenSearchLogsByValueHasValidValueListOfLogsShouldBeReturned(){
+        // given
+        val level = "info"
+        val logs = mutableListOf(
+            Log(1,"info",null,"ok", LocalDateTime.parse("2023-01-06T15:29:30"),MicroService(null,null,null,null)),
+            Log(2,"info",null,"ok", LocalDateTime.parse("2023-01-07T15:29:30"),MicroService(null,null,null,null)),
+            Log(3,"info",null,"ok", LocalDateTime.parse("2023-01-15T15:29:30"),MicroService(null,null,null,null))
+        )
+
+        // when
+        Mockito.`when`(repository.findByLevel(level)).thenReturn(logs)
+
+
+        // then
+        assertEquals(3,repository.findByLevel(level)!!.size)
+
+    }
+
 
 
 
